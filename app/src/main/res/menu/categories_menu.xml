@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/geography_item"
+        android:title="geography" />
+
+    <item android:id="@+id/animals_item"
+        android:title="animals" />
+
+    <item android:id="@+id/foods_item"
+        android:title="foods" />
+
+    <item android:id="@+id/planets_item"
+        android:title="planets" />
+</menu>
