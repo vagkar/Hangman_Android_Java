@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 
@@ -43,14 +44,25 @@ public class Game extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     private ArrayList<Word> words = new ArrayList<>();
     private int faultsLetters;
     private String lettersTried;
+    private int lettersRevealed;
+    private Bundle bundle = null;
+    private String userName = null;
+    private ArrayList<Players> players = new ArrayList<>();
+    private int score;
+
+    private Database db = LogIn.db;
 
     // αποκαλύπτει το γράμμα μέσα στην λέξη
     public void revealLetter(char l) {
-        for (int i = 0; i < hiddenWord.length(); i++) {
-            if (l == hiddenWord.charAt(i)) {
-                displayedWordArray[i] = l;
+        if (!lettersTried.contains(Character.toString(l))) {
+            for (int i = 0; i < hiddenWord.length(); i++) {
+                if (l == hiddenWord.charAt(i)) {
+                    displayedWordArray[i] = l;
+                    lettersRevealed++;
+                }
             }
         }
+        displayedWord = Arrays.toString(displayedWordArray).trim();
 
         /*int index = hiddenWord.indexOf(l);
 
@@ -72,6 +84,7 @@ public class Game extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     public void initializeGame() {
         categoryText.setText(selectedCategory);
         faultsLetters = 0;
+        lettersRevealed = 0;
 
         ArrayList<String> categoryWords = new ArrayList<>();
         for (int i = 0; i < words.size(); i++) {
@@ -89,7 +102,7 @@ public class Game extends AppCompatActivity implements PopupMenu.OnMenuItemClick
             displayedWordArray[i] = '_';
         }
 
-        displayedWord = displayedWordArray.toString();
+        displayedWord = Arrays.toString(displayedWordArray);
 
         displayedWordOnScreen();
 
@@ -120,6 +133,16 @@ public class Game extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         letterInput = findViewById(R.id.edtLetter);
         menuButton = findViewById(R.id.menu_button);
         ngButton = findViewById(R.id.ngButton);
+        bundle = getIntent().getExtras();
+        userName = bundle.getString("name");
+        players = db.getPlayers();
+
+        for(int i=0; i < players.size(); i++)
+        {
+            if(userName.equals(players.get(i).getName()))
+                score = players.get(i).getScore();
+        }
+
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,8 +223,9 @@ public class Game extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
     public void checkLetter(char l) {
 
-        //check for caps
-        if (l >= 'a' && l <= 'z' || l >= 'A' && l <= 'Z') {
+        //check if input is a letter
+        if ((l >= 'a' && l <= 'z') || (l >= 'A' && l <= 'Z')) {
+            //check for caps
             if (l >= 'A' && l <= 'Z')
                 l = Character.toLowerCase(l);
         }
@@ -216,12 +240,16 @@ public class Game extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
             //}
             //win check
-            if (hiddenWord.equals(displayedWord)) {
+            if (hiddenWord.length() == lettersRevealed) {
                 categoryText.setText("You Won! Press New Game and select category");
             }
         } else {
             //increase the number of fault letters and show on the screen next hangman image
-            increaseAndDisplayTries();
+            if (!lettersTried.contains(Character.toString(l))) {
+                increaseAndDisplayTries();
+                score += 10;
+                db.updateScore(userName, score);
+            }
 
             //lose check
             if (faultsLetters == 6) {

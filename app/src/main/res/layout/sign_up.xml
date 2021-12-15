@@ -42,6 +42,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signUpNameText" />
 
+    <ImageView
+        android:id="@+id/showHideSignUpPassword"
+        android:layout_width="49dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="50dp"
+        android:clickable="true"
+        android:padding="5dp"
+        android:src="@drawable/eye"
+        app:layout_constraintBottom_toBottomOf="@+id/signUpPasswordText"
+        app:layout_constraintEnd_toEndOf="@+id/signUpPasswordText"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/signUpPasswordText"
+        app:layout_constraintStart_toStartOf="@+id/signUpPasswordText" />
+
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"

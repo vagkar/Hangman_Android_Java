@@ -16,7 +16,7 @@ public class LeaderBoard extends AppCompatActivity
     //private ArrayAdapter<Players> playerAdapter = null;
     //private ListView playerList = null;
     private LogIn login = null;
-    private Database mydb = LogIn.mydb;
+    private Database db = LogIn.db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -29,7 +29,7 @@ public class LeaderBoard extends AppCompatActivity
         //leaderBoardLayout.addView(playerList);
         try{
             players = new ArrayList<>();
-            players = mydb.getPlayers();
+            players = db.getPlayers();
 
             PlayerItemAdapter playerAdapter = new PlayerItemAdapter(this, players);
 

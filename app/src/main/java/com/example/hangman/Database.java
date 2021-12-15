@@ -70,4 +70,19 @@ public class Database extends SQLiteOpenHelper
         SQLiteDatabase database = getWritableDatabase();
         database.execSQL("insert into " + tableName + "(name, password, score) values('"+ name +"','"+ password +"',"+ score +")");
     }
+
+    public boolean checkLogin(String name, String password)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + tableName + " WHERE NAME=? AND PASSWORD=?", new String[]{name, password});
+        if(cursor.getCount()>0)
+            return true;
+        return false;
+    }
+
+    public void updateScore(String name, int score)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE " + tableName + " SET SCORE=" + "'" + score + "'" + " WHERE NAME=" + "'" + name + "'");
+    }
 }

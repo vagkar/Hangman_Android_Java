@@ -2,19 +2,34 @@ package com.example.hangman;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener
 {
     private TextView back = null;
-    private EditText name = null, password = null;
+    private EditText name = null;
+    private EditText password = null;
     private Button signUpButton = null;
-    private Database db = LogIn.mydb;
+    private ImageView showHidePass = null;
+    private static int count = 0;
+    private Database db = LogIn.db;
+
+    public void showHidePassword() {
+        count++;
+
+        if (count %2 == 0)
+            password.setTransformationMethod(new PasswordTransformationMethod());
+        else
+            password.setTransformationMethod(null);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,9 +41,11 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener
         name = findViewById(R.id.signUpNameText);
         password = findViewById(R.id.signUpPasswordText);
         signUpButton = findViewById(R.id.signUpButton);
+        showHidePass = findViewById(R.id.showHideSignUpPassword);
 
         back.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
+        showHidePass.setOnClickListener(this);
     }
 
     @Override
@@ -45,6 +62,13 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener
                 String passwordInput = password.getText().toString();
                 db.insertPlayer(nameInput, passwordInput, 0);
                 Toast.makeText(getApplicationContext(), "Signed up successfully", Toast.LENGTH_LONG).show();
+                Intent i = new Intent(this, Welcome.class);
+                i.putExtra("name", name.getText().toString());
+                startActivity(i);
+                break;
+
+            case R.id.showHideSignUpPassword:
+                showHidePassword();
                 break;
 
             default:
